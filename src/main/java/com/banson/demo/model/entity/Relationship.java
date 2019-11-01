@@ -30,17 +30,17 @@ import lombok.NoArgsConstructor;
  */
 @Entity
 @Data
-public class EdgePk {
+public class Relationship {
 
-    public EdgePk(String type, NodePk source, NodePk target) {
+    public Relationship(String type, Person source, Person target) {
         this.type = type;
         this.source = source;
         this.target = target;
         this.id = new Id(source.getId(), target.getId());
     }
 
-    public static EdgePk of(String type, NodePk source, NodePk target) {
-        return new EdgePk(type, source, target);
+    public static Relationship of(String type, Person source, Person target) {
+        return new Relationship(type, source, target);
     }
 
     @EmbeddedId
@@ -52,39 +52,37 @@ public class EdgePk {
     @AllArgsConstructor(staticName = "of")
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class Id implements Serializable {
-        @AttributeOverrides({
-            @AttributeOverride(name = "pk1", column = @Column(name = "SOURCE_PK1")),
-            @AttributeOverride(name = "pk2", column = @Column(name = "SOURCE_PK2")) })
+        @AttributeOverrides({ @AttributeOverride(name = "firstName", column = @Column(name = "SOURCE_FIRSTNAME")),
+            @AttributeOverride(name = "lastName", column = @Column(name = "SOURCE_LASTNAME")) })
         @NonNull
-        private NodeId sourceId;
+        private PersonId sourceId;
 
-        @AttributeOverrides({
-            @AttributeOverride(name = "pk1", column = @Column(name = "TARGET_PK1")),
-            @AttributeOverride(name = "pk2", column = @Column(name = "TARGET_PK2")) })
+        @AttributeOverrides({ @AttributeOverride(name = "firstName", column = @Column(name = "TARGET_FIRSTNAME")),
+            @AttributeOverride(name = "lastName", column = @Column(name = "TARGET_LASTNAME")) })
         @NonNull
-        private NodeId targetId;
+        private PersonId targetId;
     }
 
     @NonNull
     private String type;
 
     @MapsId("sourceId")
-    @ManyToOne
-    @PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "source_pk1", referencedColumnName = "pk1"),
-        @PrimaryKeyJoinColumn(name = "source_pk2", referencedColumnName = "pk2") })
+    @ManyToOne(cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "SOURCE_FIRSTNAME", referencedColumnName = "firstName"),
+        @PrimaryKeyJoinColumn(name = "SOURCE_LASTNAME", referencedColumnName = "lastName") })
     @NonNull
-    private NodePk source;
+    private Person source;
 
     @MapsId("targetId")
-    @ManyToOne(cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "target_pk1", referencedColumnName = "pk1"),
-        @PrimaryKeyJoinColumn(name = "target_pk2", referencedColumnName = "pk2") })
+    @ManyToOne
+    @PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "TARGET_FIRSTNAME", referencedColumnName = "firstName"),
+        @PrimaryKeyJoinColumn(name = "TARGET_LASTNAME", referencedColumnName = "lastName") })
     @NonNull
-    private NodePk target;
+    private Person target;
 
     @Override
     public String toString() {
-        return "Edge [" + type + ":" + source.getName() + ":" + target.getName() + "]";
+        return "[" + type + " : " + source.getId().toString() + " -> " + target.getId().toString() + "]";
     }
 
 }

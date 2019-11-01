@@ -12,13 +12,15 @@ import javax.persistence.OneToMany;
 
 import org.springframework.lang.NonNull;
 
+import com.github.javafaker.Faker;
+
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
- * Equivalent to {@link NodePk}, but with an Edge which introduces a surrogate id.
+ * Equivalent to {@link Person}, but with an Edge which introduces a surrogate id.
  * 
  * @author BA030483
  *
@@ -29,13 +31,19 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Node {
     @EmbeddedId
-    private NodeId id;
+    private PersonId id;
+    
+    private static Faker faker = new Faker();
 
     public static Node of(String name) {
         Node node = new Node();
-        node.setId(NodeId.of(name.charAt(0), 1L));
+        node.setId(PersonId.of(name));
         node.setName(name);
         return node;
+    }
+    
+    public static Node newRandom() {
+        return of(faker.name().fullName());
     }
 
     @Column(unique = true, nullable = false)

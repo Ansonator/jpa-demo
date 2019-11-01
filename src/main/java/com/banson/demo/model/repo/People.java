@@ -3,10 +3,10 @@ package com.banson.demo.model.repo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
-import com.banson.demo.model.entity.CollectionNode;
+import com.banson.demo.model.entity.Person;
 import com.banson.demo.model.entity.PersonId;
 
-@RepositoryRestResource(path = "collectionNodes")
-public interface CollectionNodeRepo extends JpaRepository<CollectionNode, PersonId> {
+@RepositoryRestResource(path = "people")
+public interface People extends JpaRepository<Person, PersonId> {
 
 }

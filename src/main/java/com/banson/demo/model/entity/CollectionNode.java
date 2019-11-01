@@ -22,27 +22,23 @@ import lombok.ToString;
  */
 @Entity
 @Data
-@ToString(exclude = { "outgoing" })
 @EqualsAndHashCode(of = { "id" })
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CollectionNode {
     @EmbeddedId
-    private NodeId id;
+    private PersonId id;
 
-    private String name = "whatever";
-
-    public static CollectionNode of(String name) {
+    public static CollectionNode of(String fullName) {
         CollectionNode node = new CollectionNode();
-        node.setId(NodeId.of(name.charAt(0), 1L));
-        node.setName(name);
+        node.setId(PersonId.of(fullName));
         return node;
     }
 
     @ElementCollection
-    private Set<CollectionEdge> outgoing = new HashSet<>();
+    private Set<CollectionEdge> children = new HashSet<>();
 
     public void linkTo(CollectionNode node) {
-        CollectionEdge edge = CollectionEdge.of("type1", node);
-        outgoing.add(edge);
+        CollectionEdge edge = CollectionEdge.of("family", node);
+        children.add(edge);
     }
 }
